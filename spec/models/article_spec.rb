@@ -4,6 +4,7 @@ require 'spec_helper'
 describe Article do
 
   before do
+    Article.destroy_all
     @blog = stub_model(Blog)
     @blog.stub(:base_url) { "http://myblog.net" }
     @blog.stub(:text_filter) { "textile" }
@@ -629,6 +630,31 @@ describe Article do
       end
     end
 
+  end
+
+  describe '#merge_with' do
+    before do
+      @article = Factory.create(:article, author: 'John', title: 'Story', body: 'First')
+      @other_article = Factory.create(:article, author: 'Jane', title: 'Rant', body: 'Second')
+    end
+
+    it 'contains the text of both previous articles' do
+      @merged_article = @article.merge_with @other_article.id
+      @merged_article.reload.body.should == 'First Second'
+    end
+
+    it 'has the same author of one of the merged articles' do
+      @merged_article = @article.merge_with @other_article.id
+      [@article.author, @other_article.author].should include @merged_article.reload.author
+    end
+
+    it 'carries over comments from the merged articles' do
+      @article_comment = Factory.create(:comment, article: @article)
+      @other_article_comment = Factory.create(:comment, article: @other_article)
+      @merged_article = @article.merge_with @other_article.id
+
+      @merged_article.reload.comments.should match_array [@article_comment, @other_article_comment]
+    end
   end
 end
 

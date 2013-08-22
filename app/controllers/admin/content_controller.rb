@@ -113,6 +113,12 @@ class Admin::ContentController < Admin::BaseController
     render :text => nil
   end
 
+  def merge
+    @article = Article.find(params[:id])
+    @merged_article = @article.merge_with(params[:merge_with])
+    redirect_to action: :edit, id: @merged_article.id
+  end
+
   protected
 
   def get_fresh_or_existing_draft_for_article

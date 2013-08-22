@@ -24,3 +24,4 @@ public/cache/*
 bin/
 .bundle/
 .ruby-version
+TAGS

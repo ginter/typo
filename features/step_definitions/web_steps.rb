@@ -55,6 +55,24 @@ And /^I am logged into the admin panel$/ do
   end
 end
 
+Given /^I am logged into the publisher panel$/ do
+  User.create!({:login => 'publisher',
+                :password => 'ppppppp',
+                :email => 'publisher@gmail.com',
+                :profile_id => 2,
+                :name => 'publisher',
+                :state => 'active'})
+  visit '/accounts/login'
+  fill_in 'user_login', :with => 'publisher'
+  fill_in 'user_password', :with => 'ppppppp'
+  click_button 'Login'
+  if page.respond_to? :should
+    page.should have_content('Login successful')
+  else
+    assert page.has_content?('Login successful')
+  end
+end
+
 # Single-line step scoper
 When /^(.*) within (.*[^:])$/ do |step, parent|
   with_scope(parent) { When step }
