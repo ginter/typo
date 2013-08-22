@@ -422,7 +422,8 @@ class Article < Content
       title: title,
       author: author, 
       body: [body, other_article.body].join(' '),
-      comments: comments + other_article.comments
+      comments: comments + other_article.comments,
+      published: true
     )
     if merged_article.persisted?
       other_article.reload.destroy

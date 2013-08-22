@@ -638,6 +638,11 @@ describe Article do
       @other_article = Factory.create(:article, author: 'Jane', title: 'Rant', body: 'Second')
     end
 
+    it 'is published' do
+      @merged_article = @article.merge_with @other_article.id
+      @merged_article.reload.should be_published
+    end
+
     it 'contains the text of both previous articles' do
       @merged_article = @article.merge_with @other_article.id
       @merged_article.reload.body.should == 'First Second'
