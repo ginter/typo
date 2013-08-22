@@ -418,12 +418,17 @@ class Article < Content
 
   def merge_with(article_id)
     other_article = Article.find(article_id)
-    Article.create(
+    merged_article = Article.create(
       title: title,
       author: author, 
       body: [body, other_article.body].join(' '),
       comments: comments + other_article.comments
     )
+    if merged_article.persisted?
+      other_article.reload.destroy
+      reload.destroy
+    end
+    merged_article
   end
 
   protected
